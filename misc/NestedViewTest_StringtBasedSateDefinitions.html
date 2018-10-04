@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<!--
+    SeldEd
+    This is an example of nested views in the code below. It includes a child of a child nested view.
+
+    1)  Note that the most descendent child has the line:  url:'/'   The others don't. Thus all members
+        are displayed because the whole node tree is treated as the "root" view.
+
+    // https://github.com/angular-ui/ui-router/wiki/quick-reference#stateproviderstatestatename-stateconfig
+    // https://github.com/angular-ui/ui-router/wiki/quick-reference
+    // https://github.com/angular-ui/ui-router/wiki/Multiple-Named-Views
+-->
+
+<html>
+    <head>
+        <title>SelfEd - Nested View Test</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+        
+            /*  // https://css-tricks.com/snippets/css/using-font-face/
+                // https://www.filamentgroup.com/lab/font-loading.html
+                // http://fontsforweb.com/font/show?id=423      // This is the money shot
+            */
+            
+            
+            @font-face {
+               font-family: refFont;
+               src: url(sansation_light.ttf);
+            }
+            
+            
+            .pageHeader
+            {
+                font-size:30px;
+                color:red;
+                font-weight:bold;
+            }
+            .refStyle
+            {
+                font-size:16px;
+                color:purple;
+                /*font-family: "Brush Script MT", cursive;*/
+                font-family:refFont; // Imported font, see @font-face
+                /*font-weight:bold; */
+/*                 
+                text-shadow: 0px  -1px  0px black, 
+                             1px  -1px  0px black, 
+                             1px   0px  0px black, 
+                             1px   1px  0px black,
+                             0px   1px  0px black,
+                            -1px   1px  0px black,
+                            -1px   0px  0px black,
+                            -1px  -1px  0px black;
+*/
+                            
+/* 
+                text-shadow: 1px  1px  0px black, 
+                             1px  0px  0px black; 
+*/
+                             
+            }
+            
+        </style>
+    </head>
+    <body ng-app="ViewApp">
+        <div class="pageHeader">SelfEd - Example of a nested views (states) using $stateProvider</div>
+        <div>These are very simple examples of nested views with various template source techniques.</div>
+        <div>References to code sections may have more than one section. For example: There are two AAA sections</div>
+        <br><br>
+        <div data-ui-view></div>    <!-- This is the root view and is not named -->
+        
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+    <!--<script src="vendor/angular-ui-router.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js"></script>    
+    <script>
+        
+        angular.module('ViewApp',['ui.router'])
+        
+            .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider){
+                $urlRouterProvider.otherwise('/');
+        
+                /**************************************************************/
+                /* code section AAA
+                 * 
+                /**************************************************************/
+                $stateProvider.state('rootViewName', {
+                    templateUrl: 'cache.rootTmpl.html'
+                });
+        
+        
+        
+                /**************************************************************/
+                // code section BBB
+                /**************************************************************/
+                $stateProvider.state('childViewName', {
+                    name: 'childViewName',
+                    //url: '/',
+                    parent: 'rootViewName',
+                    views: 
+                        {
+                            'view1': {templateUrl: 'cache.tmpl1.html',
+                                       controller: 'view1Ctrl'}, 
+
+                            'view2': {templateUrl: './NestedViewTest.tmpl1.html'}
+                        }
+                    
+                });
+                
+                /**************************************************************/
+                /* code section DDD
+                 * Also reference code section CCC in NestedViewTest.tmpl1.html
+                 * for location of the data-ui-view="view3" directive
+                 */
+                /**************************************************************/
+                $stateProvider.state('childOfChildViewName', {
+                    url: '/',
+                    parent: 'childViewName',
+                    views:
+                        {
+                            'view3': {
+                                template: 
+                                '<h3 style="background-color:#EEEEEE; padding:20px; border:2px solid black; color:darkgreen;">' +
+                                '<span class="refStyle">Reference code section(s) DDD in file: NestedViewTest_ObjectBasedStateDefinitions.html</span><br>' +
+                                'If this text is darkgreen then this is the child of the second child of the root state (or view) and is an html template defined within the state definition.' + 
+                                '</h3>'
+                            }
+                        }
+                });
+        }])
+    
+        .controller('view1Ctrl', ['$scope', function($scope){
+              $scope.view1Data = 'This is the DATA from the controller!!';  
+        }])
+    
+    
+    
+    </script>
+    <!--code section AAA in file: NestedViewTest_ObjectBasedStateDefinitions.html-->
+    <script type="text/ng-template" id="cache.rootTmpl.html">
+        <div style="background-color:#CCCCCC; padding:20px; border:2px solid black;">
+            <h2 style="color:blue; font-size:26px;">
+                <span class="refStyle">Reference code section(s) AAA in file: NestedViewTest_ObjectBasedStateDefinitions.html</span><br>
+                This is the root view if it is in blue and it is a cached html template.<br>
+                Its background is this gray color
+            </h2>
+            <div data-ui-view="view1">This should be a nested view if in blue and red.</div>
+            <div data-ui-view="view2">This should be a nested view if in red</div>
+        </div>
+    </script>
+    
+    <!--code section BBB in file: NestedViewTest_ObjectBasedStateDefinitions.html-->
+    <script type="text/ng-template" id="cache.tmpl1.html">
+        <div style="background-color:#FFCCCC; padding:20px; border:2px solid black;"> 
+            <h3 style="color:blue;">
+                <span class="refStyle">Reference code section(s) BBB in file: NestedViewTest_ObjectBasedStateDefinitions.html</span><br>
+                This is the first of two children (or nested) views of the root view and is a cached template html file with a controller involved:<br>
+                <span style="color:red;">{{view1Data}}</span><br>
+                Its background is this light redish color.
+            </h3>
+        </div>
+    </script>
+         
+    </body>
+</html>

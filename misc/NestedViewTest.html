@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!--
+    SeldEd
+    This is an example of nested views in the code below
+
+    // https://github.com/angular-ui/ui-router/wiki/quick-reference#stateproviderstatestatename-stateconfig
+    // https://github.com/angular-ui/ui-router/wiki/quick-reference
+    // https://github.com/angular-ui/ui-router/wiki/Multiple-Named-Views
+-->
+
+<html>
+    <head>
+        <title>SelfEd - Nested View Test</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .pageHeader{
+                font-size:30px;
+                color:red;
+                font-weight:bold;
+            }
+        </style>
+    </head>
+    <body ng-app="ViewApp">
+        <div class="pageHeader">SelfEd - Example of a nested view</div>
+        <br><br>
+        <div data-ui-view></div>    <!-- This is the root view and is not named -->
+        
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+    <!--<script src="vendor/angular-ui-router.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js"></script>    
+    <script>
+        
+        angular.module('ViewApp',['ui.router'])
+        
+            .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider){
+                $urlRouterProvider.otherwise('/');
+                $stateProvider
+                        
+
+                .state('rootView', {
+                    //url:'/',
+                    templateUrl: 'cache.rootTmpl.html'
+                })
+
+                .state('rootView.viewState', {  //viewState is a child of rootView
+                    url:'/',
+                    views: {
+                         // 'view1': {templateUrl: './view1.tmpl1.html'}   
+                         'view1': {templateUrl: 'cache.tmpl1.html',
+                                    controller: 'view1Ctrl'}, 
+
+                         'view2': {templateUrl: './NestedViewTest.tmpl1.html'}
+                    }
+                });
+                    
+        }])
+    
+            .controller('view1Ctrl', ['$scope', function($scope){
+                  $scope.view1Data = 'This is the DATA from the controller!!';  
+                    
+        }])
+    
+    
+    
+    </script>
+    
+    <script type="text/ng-template" id="cache.rootTmpl.html">
+         
+        <h1 style="color:blue; font-size:26px;">This is the root view if it is in blue and is a cached html template</h1>
+        <div data-ui-view="view1">This should be a nested view if in blue and red.</div>
+        <div data-ui-view="view2">This should be a nested view if in red</div>
+
+    </script>
+    
+    
+    <script type="text/ng-template" id="cache.tmpl1.html">
+         
+        <h1 style="color:blue;">This is a nested view template for view1 and is a cached template view with a controller involved:<span style="color:red;">{{view1Data}}</span></h1>
+
+    </script>
+        
+        
+        
+    </body>
+</html>

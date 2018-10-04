@@ -1,0 +1,36 @@
+<!--code block CCC-->
+<!-- This is view 2 -->
+<br><br>
+<div ng-controller="ViewProperties as vProp2">
+    <div style="background-color:#FFCCFF; padding:5px 20px; border:2px solid black; border-radius:8px;"> 
+            
+        <h3>
+            <span style="color:blue; font-size:1.5em;">View 2: 
+            <span style="color:red;">&#10140;</span>
+            2nd child of the parent view</span><br>
+            This box is view 2 and is a child of the root view
+        </h3>
+        This is the second of two children (or nested) views of the root view 
+        and is a separate <span style="color:red;">html template file. 
+        (see templateUrl property of view 2)</span>
+        See <span style="color:red;">Code Block(s) CCC</span> including the
+        html template file.<br><br>
+
+        <span style="color:blue; font-size:20px;"><b>Defined state properties of the view 2 object</b></span><br>
+        <span style="position:relative; color:blue;">
+                name: <span style="color:red; position:absolute; left:200px;">
+                    "{{rootProp.childViewPropertiesName}}"</span><br>
+                parent: <span style="color:red; position:absolute; left:200px;">
+                    "{{rootProp.childViewPropertiesParent}}"</span><br>
+                views.view2.templateUrl:  <span style="color:red; position:absolute; left:200px; width:300px;">
+                    "{{rootProp.childViewPropertiesView2TemplateUrl}}"</span><br>
+                views.view2.controller:  <span style="color:red; position:absolute; left:200px; width:300px;">
+                    Not instantiated here see html template file</span><br>
+        </span>
+        <br>
+        <div style="position:relative;"> 
+            <div data-ui-view="view3"><h2>If you're reading this View 3 is not showing.</h2></div>
+            <!--<div ng-show="true" style="position:absolute; top:0px; left:0px;"><h1>Test{{vProp2.showBkgnd}}</h1></div>-->
+        </div>                   
+    </div>   
+</div>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<!-- This file is a member of SelfEd: SelfEd-Angular-Nested-Views -->
+<html>
+<head>
+    <title>SelfEd - Angular Nested Views</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="SHORTCUT ICON" href=support/teacher-icon.png>
+<style>
+
+body
+{
+width:600px;
+margin-left:auto;
+margin-right:auto;
+}
+     
+button
+{
+color:red;
+text-decoration:none;
+background-color:cyan; 
+border: 1px solid black;
+border-radius:3px;
+cursor: pointer;
+}    
+
+a
+{
+font-size:24px;
+font-weight:bold; 
+background-color:yellow;
+padding:5px 20px;
+border:1px solid black;
+border-radius:3px;
+}
+
+</style>
+</head>
+<body ng-app="ViewApp">
+    <div style="font-size:30px; color:red; font-weight:bold; text-align:center;">
+        SelfEd - Nested views (states) using ui-router<br>
+        <span style="color:blue;">With various template source techniques</span><br>
+        <span style="color:blue; font-size:20px;">Also with various controller instantiation techniques</span>
+    </div> 
+    <div> 
+        These are very simple examples of nested views with <b>various template 
+                source techniques.</b> All four views are showing because view 3 is the 
+        default due to the url being a backslash and thus defining the default
+        chain. Although view 3 is nested all views from the parent through 
+        the sibling chain will show due to the backslash at view 3 defining the
+        end of the default chain.
+    </div>
+    <br><br>
+    <div data-ui-view></div>    <!-- This is the root view and is not named -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+<!--<script src="vendor/angular-ui-router.min.js"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js"></script>    
+<script>
+
+angular.module('ViewApp',['ui.router'])
+
+    .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider){
+        $urlRouterProvider.otherwise('/');
+
+        // Code Block AAA
+        var rootViewObj = {
+            name: 'rootViewName',
+            templateUrl: 'cache.rootTmpl.html',
+            controller: 'ViewProperties as rootProp'
+        };
+        $stateProvider.state(rootViewObj);
+
+        // Code Block BBB
+        var childViewObj = {
+            name: 'childViewName',
+            parent: 'rootViewName',
+            views: 
+                {
+                    'view1': {templateUrl: 'cache.tmpl1.html',
+                                controller: 'ViewProperties as vProp1'}, 
+
+                    'view2': {templateUrl: './Nested-View.tmpl1_Exp0.html'}
+                }
+        };
+        $stateProvider.state(childViewObj);
+
+        // Code Block DDD
+        var childOfChildViewObj = {
+            name:'childOfChildViewName',
+            parent: 'childViewName',
+            url: '/',
+            views:
+            {
+                'view3': {
+                template: 
+                '<div style="background-color:#EFEFEF; padding:5px 20px; border:2px solid black; border-radius:8px;">' +
+                    '<h3><span style="color:blue; font-size:1.5em;">View 3: <span style="color:red;">&#10140;</span> child of the 2nd child</span><br>' +
+                        'This box is view 3 and is the child of the second child and is the default, thus marking the end of the default chain.</span>' +
+                    '</h3>' +
+                    '<div> This is a child of the the 2nd child and is an <span style="color:red;">html template (see template property of view 3)</span> defined in the config module. ' +
+                        'See <span style="color:red;">Code Block(s) DDD.</span> This view is the default view because it has the first defined url ' + 
+                        'who\'s value is a backslash which is the standard default url path. <span style="color:red;">NOTE!</span> There is a 4th view ' +
+                        'but it is used to show the template contents (value) of this view\'s template property. Click on the button below to see the ' + 
+                        'html of what you are reading.<br><br>' +
+                        '<span style="color:blue; font-size:20px;"><b>Defined state properties of the view 3 object<b></span>' +
+                    '</div>' +
+                    '<div style="position:relative; color:blue;">' +
+                        'name: <span style="color:red; position:absolute; left:200px;">"{{rootProp.childOfChildViewPropertiesName}}"</span><br>' +
+                        'parent: <span style="color:red; position:absolute; left:200px;">"{{rootProp.childOfChildViewPropertiesParent}}"</span><br>' +
+                        'url: <span style="color:red; position:absolute; left:200px;">"{{rootProp.childOfChildViewPropertiesUrl}}"</span><br>' +
+                        'views.view3.template:  <button id="view3TemplateBtn" ng-click="vProp3.showTemplateBkgnd()" style="position:absolute; left:200px; width:220px;">{{vProp3.btnMsg}}</button><br>' +
+                        'views.view3.controller:  <span style="color:red; position:absolute; left:200px; width:200px;">"{{rootProp.childOfChildViewPropertiesController}}"</span><br>' +
+                        'views.view3.controllerAs: <span style="color:red; position:absolute; left:200px; width:200px;">"{{rootProp.childOfChildViewPropertiesControllerAs}}"</span><br>' +
+                        '<div style="position:absolute; top:-600px;" data-ui-view="bkgndPlate"></div>' +
+                    '</div>' +
+                '</div>',
+                controller: 'ViewProperties',
+                controllerAs: 'vProp3'
+                }
+            }
+        };  
+        $stateProvider.state(childOfChildViewObj);
+        
+        
+        var bkgndPlateAndTextObj = {
+            name: 'bkgndPlateAndTextName',
+            parent: 'childOfChildViewName',
+            url: 'bkgndPlateAndTextUrl',
+            views:
+                {   
+                    'bkgndPlate': {
+                        templateUrl:'./bkgndPlateAndText.tmpl_Exp0.html'
+                    }    
+                },
+                
+            controller: 'ViewProperties',
+            controllerAs: 'vProp4'
+        };
+        $stateProvider.state(bkgndPlateAndTextObj);
+        
+}])
+
+
+// https://ui-router.github.io/ng1/docs/0.3.1/index.html#/api/ui.router.state.$stateProvider
+// http://codereview.stackexchange.com/questions/69266/json-conversion-to-single-quotes
+
+
+.controller('ViewProperties', ['$state', function($state){
+
+        var thisProperty = this;
+
+        var rootPropertiesObj = $state.get("rootViewName");  
+        thisProperty.rootPropertiesName = 
+                            rootPropertiesObj.name;
+        thisProperty.rootPropertiesTemplateUrl = 
+                            rootPropertiesObj.templateUrl;
+        thisProperty.rootPropertiesController = 
+                            rootPropertiesObj.controller;
+
+
+        var childViewPropertiesObj = $state.get("childViewName");
+        thisProperty.childViewPropertiesName = 
+                            childViewPropertiesObj.name;
+        thisProperty.childViewPropertiesParent = 
+                            childViewPropertiesObj.parent;
+        thisProperty.childViewPropertiesView1TemplateUrl = 
+                            childViewPropertiesObj.views.view1.templateUrl;
+        thisProperty.childViewPropertiesView1Controller = 
+                            childViewPropertiesObj.views.view1.controller;
+        thisProperty.childViewPropertiesView2TemplateUrl = 
+                            childViewPropertiesObj.views.view2.templateUrl;
+        thisProperty.childViewPropertiesView2Controller = 
+                            childViewPropertiesObj.views.view2.controller;
+
+
+        var childOfChildViewPropertiesObj = $state.get("childOfChildViewName");
+        thisProperty.childOfChildViewPropertiesName = 
+                            childOfChildViewPropertiesObj.name;
+        thisProperty.childOfChildViewPropertiesParent = 
+                            childOfChildViewPropertiesObj.parent;
+        thisProperty.childOfChildViewPropertiesUrl = 
+                            childOfChildViewPropertiesObj.url;            
+        thisProperty.childOfChildViewPropertiesTemplate = 
+                            childOfChildViewPropertiesObj.views.view3.template;
+        thisProperty.childOfChildViewPropertiesController = 
+                            childOfChildViewPropertiesObj.views.view3.controller;
+        thisProperty.childOfChildViewPropertiesControllerAs = 
+                            childOfChildViewPropertiesObj.views.view3.controllerAs;
+      
+// https://github.com/angular-ui/ui-router/wiki/Nested-States-&-Nested-Views
+    
+       
+        thisProperty.btnMsg = 'Click to see template contents';
+        
+        thisProperty.showTemplateBkgnd = function(){
+                
+                thisProperty.showTemplate = !thisProperty.showTemplate;
+                //thisProperty.showBkgnd = "Another ANother Test";
+                
+                if($state.current.name === 'childOfChildViewName'){
+                    $state.go('bkgndPlateAndTextName');
+                    thisProperty.btnMsg = 'Click to Unsee template contents';
+                }
+                
+                if($state.current.name === 'bkgndPlateAndTextName'){
+                    $state.go('childOfChildViewName');
+                    thisProperty.btnMsg = 'Click to see template contents';
+                }
+        };
+}]);
+
+</script>
+<!-- Code Block AAA -->
+<script type="text/ng-template" id="cache.rootTmpl.html">
+    <div style="padding:5px 20px; border:2px solid black; border-radius:8px; background-color:#EFEFEF;">
+        <h3><span style="color:blue; font-size:1.5em;">Root View: 
+                <span style="color:red;">&#10140;</span>
+                This is the parent view</span><br>This box is the root or 
+                parent view. (Note: view 3 is the default view)
+            </span>
+        </h3>
+        <div><b>
+            This is the root view and is a <span style="color:red;">
+            cached html template (see templateUrl property of the root view).</span>
+            This root view has the following defined state properties. 
+            Within this view are two additional views (see below) called view 1
+            and view 2. See <span style='color:red;'>Code Block(s) AAA</span> 
+            and look for the <span style="color:red;">data-ui-view</span> 
+            directives to see how the nested views (view 1 and  view 2) 
+            come into play.<b><br><br>
+            <span style="color:blue; font-size:20px;">
+                    <b>Defined state properties of the root view object<b></span><br>
+            <span style="position:relative; color:blue;">
+                name: <span style="color:red; position:absolute; left:110px;">
+                        "{{rootProp.rootPropertiesName}}"</span><br>
+                templatUrl: <span style="color:red; position:absolute; left:110px;">
+                        "{{rootProp.rootPropertiesTemplateUrl}}"</span><br>
+                controller: <span style="color:red; position:absolute; left:110px; width:250px;">
+                        "{{rootProp.rootPropertiesController}}"</span><br><br>
+            </span>
+            
+        </div>
+        <div data-ui-view="view1"><h2> If you're reading this View 1 is not showing.</h2></div>
+        <div data-ui-view="view2"><h2> If you're reading this View 2 is not showing.</h2></div>
+    </div>
+</script>
+
+<!-- Code Block BBB -->
+<script type="text/ng-template" id="cache.tmpl1.html">
+    <div style="padding:5px 20px; border:2px solid black; border-radius:8px; background-color:#ccff33;"> 
+        <h3><span style="color:blue; font-size:1.5em;">View 1: 
+                <span style="color:red;">&#10140;</span>
+                1st child of the parent view</span><br> This box is view 1 and
+                is a child of the root view
+            </span>
+        </h3>
+        <div>
+            This is the first of two children (or nested) views of the root
+            view and is a <span style="color:red;">cached html template. 
+            (see templateUrl property of view 1)</span>
+            See <span style='color:red;'>Code Block(s) BBB</span><br><br>
+            <span style="color:blue; font-size:20px;"><b>Defined state properties of
+                the view 1 object<b></span><br>
+            <span style="position:relative; color:blue;">
+                name: <span style="color:red; position:absolute; left:200px;">
+                        "{{rootProp.childViewPropertiesName}}"</span><br>
+                parent: <span style="color:red; position:absolute; left:200px;">
+                        "{{rootProp.childViewPropertiesParent}}"</span><br>
+                views.view1.templateUrl:  <span style="color:red; position:absolute; left:200px; width:200px;">
+                        "{{rootProp.childViewPropertiesView1TemplateUrl}}"</span><br>
+                views.view1.controller:  <span style="color:red; position:absolute; left:200px; width:200px;">
+                        "{{rootProp.childViewPropertiesView1Controller}}"</span><br>
+            </span>
+        <div>
+        <br>
+    </div>
+</script>
+
+</body>
+</html>

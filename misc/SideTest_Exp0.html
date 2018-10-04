@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+02/17/2017
+Here's a side test that needs to be developed into a SelfEd.
+
+It's about JSON constructs and Javascript objects. The effort here is to find
+out where a Javascript object ends and a JSON object begins.
+So far this SelfEd tells me that turning a Javascript object into a JSON
+object is to add single quotes around the whole expression. Done. 
+To add the single quotes use JSON.stringify(js object) method to add the
+single quotes. It'd be a nice challenge to stringify the object from scratch.
+
+
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div id="showParse1">Not Parsed if You See This</div>
+        
+        <div id="showParse2">Not Parsed if You See This</div>
+        
+        <div id="showParse3">Not Parsed if You See This</div>
+        
+        <div id="showParse4">Not Parsed if You See This</div>
+        
+        <div id="view">Not Parsed if You See This</div>
+        
+        <div id="WTF">Calling a function within function</div>
+        
+        
+<script>
+
+    var jsonVar1 = {    "a1" : { "a2": { "a3":"a4" }    }    };
+    
+    var jsonVar2 = {   a1 : { "a2": { a3:"a4" }    }     };
+    
+    var jsonVar3 = {   a1 : { a2: { "a3":"a4" }    }     };
+    
+    var jsonVar4 = {   "a1" : { a2: {  a3 :"a4" }    }     };
+    
+    //views: 
+    var views =    {  'view1': {  templateUrl: 'cache.tmpl1.html', controller: 'ViewProperties as vProp1'  }   };
+    
+    
+    
+    
+    
+    jsonVar1 = JSON.stringify(jsonVar1);
+    var jsonVar1Parsed = JSON.parse(jsonVar1);                
+
+    var inner = function(){};
+    
+    
+    function parseOp(){
+        
+        function inner(){
+            return 5;
+        }
+        
+        
+        
+        
+        document.getElementById("showParse1").innerHTML = jsonVar1Parsed.a1.a2.a3;
+        
+        document.getElementById("showParse2").innerHTML = jsonVar2.a1.a2.a3;
+        
+        document.getElementById("showParse3").innerHTML = jsonVar3.a1.a2.a3;
+        
+        document.getElementById("showParse4").innerHTML = jsonVar4.a1.a2.a3;
+        
+        document.getElementById("view").innerHTML = views.view1.templateUrl;
+        
+        
+        
+        return inner();
+        
+    }
+    
+    document.getElementById("WTF").innerHTML = parseOp().inner();
+    
+    inner();
+    
+</script>         
+</body>
+</html>
